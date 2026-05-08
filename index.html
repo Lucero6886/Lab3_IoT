@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 3: Trạm Khí Hậu IoT & Đồng Bộ Hóa Đám Mây (Blynk Dashboard)</title>
+    <style>
+        :root {
+            --primary: #1e3d59;
+            --secondary: #ff6e40;
+            --bg-body: #f5f7fa;
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border: #e1e4e8;
+            --note-bg: #e1f5fe;
+            --note-border: #03a9f4;
+            --warning-bg: #fff3e0;
+            --warning-border: #ff9800;
+            --mentor-bg: #f3e5f5;
+            --mentor-border: #9c27b0;
+            --student-bg: #e8f5e9;
+            --student-border: #4caf50;
+            --danger-bg: #ffebee;
+            --danger-border: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--primary);
+            margin-top: 1.5em;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+
+        .meta-item strong {
+            display: block;
+            font-size: 0.9em;
+            color: #bbdefb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .callout {
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            border-left: 5px solid;
+        }
+
+        .note-box { background: var(--note-bg); border-color: var(--note-border); }
+        .warning-box { background: var(--warning-bg); border-color: var(--warning-border); }
+        .mentor-box { background: var(--mentor-bg); border-color: var(--mentor-border); }
+        .student-box { background: var(--student-bg); border-color: var(--student-border); }
+        .danger-box { background: var(--danger-bg); border-color: var(--danger-border); }
+
+        .callout-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .note-box .callout-title { color: #0277bd; }
+        .warning-box .callout-title { color: #e65100; }
+        .mentor-box .callout-title { color: #6a1b9a; }
+        .student-box .callout-title { color: #2e7d32; }
+        .danger-box .callout-title { color: #c62828; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f3f5;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #ccc;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #f1f3f5;
+            color: #d63384;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        ul, ol { padding-left: 25px; }
+        li { margin-bottom: 8px; }
+
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+        .toc ul { list-style-type: none; padding-left: 0; }
+        .toc li { margin-bottom: 5px; }
+        .toc a { color: var(--primary); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            line-height: 24px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .checklist-item input[type="checkbox"] {
+            margin-top: 5px;
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .hl-yellow { background-color: rgba(255, 235, 59, 0.3); padding: 2px; }
+        .hl-green { background-color: rgba(76, 175, 80, 0.2); padding: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 1. HEADER TÀI LIỆU -->
+    <h1>TÀI LIỆU HƯỚNG DẪN THỰC HÀNH MENTOR-GUIDED</h1>
+    <div class="meta-grid">
+        <div class="meta-item">
+            <strong>Tên bài Lab</strong>
+            Lab 3: Xây dựng Dashboard Đám Mây & Đồng bộ dữ liệu (Blynk Cloud)
+        </div>
+        <div class="meta-item">
+            <strong>Chuỗi học phần</strong>
+            Hệ sinh thái IoT / Embedded 8 Labs
+        </div>
+        <div class="meta-item">
+            <strong>Nhóm kỹ năng chính</strong>
+            Cloud Dashboard, Virtual Pins, 2-Way Sync, Non-blocking Timer, API Rate Limits
+        </div>
+        <div class="meta-item">
+            <strong>Mức độ / Vị trí</strong>
+            Trung cấp (Intermediate) - Tầng 3 / Lab 3 trong 8
+        </div>
+    </div>
+
+    <!-- MỤC LỤC -->
+    <div class="toc">
+        <strong>Mục Lục Nhanh:</strong>
+        <ul>
+            <li><a href="#tong-quan">2. Tổng quan Lab</a></li>
+            <li><a href="#ban-chat">3. Bản chất của bài Lab</a></li>
+            <li><a href="#muc-tieu">4. Mục tiêu giảng dạy / học tập</a></li>
+            <li><a href="#kien-thuc">5. Kiến thức nền sinh viên cần có</a></li>
+            <li><a href="#chuan-bi">6. Chuẩn bị trước giờ Lab</a></li>
+            <li><a href="#phan-tich-ht">7. Phân tích Kiến trúc Hệ thống</a></li>
+            <li><a href="#ket-noi">8. Phân tích Sơ đồ phần cứng</a></li>
+            <li><a href="#tham-so">9. Các tham số Cần Cá nhân hóa</a></li>
+            <li><a href="#quy-trinh">10. Quy trình Thực hành Từng bước</a></li>
+            <li><a href="#hoi-dap">11. Sinh viên cần trả lời trước khi Code</a></li>
+            <li><a href="#canh-bao-code">12. Lỗi Kiến trúc Kinh điển (Cấm Copy Mù quáng)</a></li>
+            <li><a href="#phan-tich-code">13. Phân tích Code Chuẩn Kỹ sư Nhúng</a></li>
+            <li><a href="#checklist">14. Checklist Nghiệm thu</a></li>
+            <li><a href="#debug">15. Debug và Xử lý sự cố IoT</a></li>
+            <li><a href="#danh-gia">16. Tự đánh giá & Bài mở rộng</a></li>
+            <li><a href="#mentor">17. Ghi chú Mentoring cho Giảng viên</a></li>
+        </ul>
+    </div>
+
+    <!-- 2. TỔNG QUAN LAB -->
+    <h2 id="tong-quan">2. Tổng quan Lab</h2>
+    <div class="section-card">
+        <p><strong>Tên chuẩn hóa:</strong> Thiết kế Dashboard Quản lý Dữ liệu Thời gian thực và Cảnh báo Tự động trên nền tảng Cloud IoT.</p>
+        <p><strong>Chủ đề kỹ thuật chính:</strong> Khái niệm Datastream (Luồng dữ liệu), Virtual Pin (Chân ảo), Xây dựng Web/Mobile UI, Lập trình Timer bất đồng bộ (Non-blocking Timer), Đồng bộ trạng thái 2 chiều (2-way sync), và Quản trị Cảnh báo (Event Logging).</p>
+        <p><strong>Vị trí trong hệ thống:</strong> <strong>Tầng 3 (Dashboard / Cloud IoT)</strong>.</p>
+        <ul>
+            <li><strong>Kế thừa từ Lab 2:</strong> Mạch phần cứng đã đấu nối hoàn thiện (DHT11, Button, LED rời). Khả năng đọc cảm biến chính xác và chống dội phím cơ học (debounce) đã được kiểm chứng.</li>
+            <li><strong>Chuẩn bị cho Lab 4:</strong> Nền tảng Blynk đóng gói giao thức truyền thông thành các hàm C++ đơn giản. Đây là bước đệm tuyệt vời để sinh viên hiểu "cảm giác" dữ liệu bay lên mây thế nào, trước khi phải tự tay cấu hình giao thức MQTT trần trụi và phức tạp hơn ở Lab 4.</li>
+        </ul>
+    </div>
+
+    <!-- 3. BẢN CHẤT CỦA BÀI LAB -->
+    <h2 id="ban-chat">3. Bản chất của bài Lab</h2>
+    <div class="note-box callout">
+        <span class="callout-title">Bản chất kỹ thuật IoT</span>
+        <p>Nếu Lab 2 là "Dạy mạch nói chuyện với cảm biến", thì Lab 3 là <strong>"Dạy mạch nói chuyện với thế giới thông qua Internet"</strong>. Ba bài toán cốt lõi của Lab này:</p>
+        <ol>
+            <li><strong>Khái quát hóa Phần cứng thành Datastream:</strong> Dữ liệu mạng không chạy qua dây điện đồng. Ta cần tạo ra các "Đường ống ảo" (Datastream) gắn với các "Chân ảo" (Virtual Pin: V0, V1, V2). MCU gửi số nhiệt độ 30 vào kênh V1, Cloud nhận được từ kênh V1 và vẽ lên đồng hồ Gauge trên Web.</li>
+            <li><strong>Phá vỡ tư duy "Vòng lặp Tuyến tính" (Cấm dùng Delay):</strong> Ở Lab 2, ta dùng lệnh <code>delay(2000)</code> để chờ DHT11. Trong môi trường IoT, nếu vi điều khiển "ngủ đông" 2 giây, nó sẽ không kịp phản hồi các gói tin Ping (Heartbeat) từ máy chủ Blynk, dẫn đến thiết bị bị ngắt kết nối (Offline) liên tục. Bắt buộc phải chuyển sang tư duy <strong>Đa nhiệm giả lập (BlynkTimer)</strong>.</li>
+            <li><strong>Đồng bộ Trạng thái Phức tạp (2-way Sync):</strong> Bài toán kinh điển nhất của Smart Home: Khi bạn bật đèn bằng nút nhấn cơ trên tường, công tắc trên App điện thoại cũng phải tự động trượt sang ON. Ngược lại, khi bấm App, nút trên tường cũng phải cập nhật logic. MCU đóng vai trò trung tâm đồng bộ giữa thực và ảo.</li>
+        </ol>
+    </div>
+
+    <!-- 4. MỤC TIÊU GIẢNG DẠY / HỌC TẬP -->
+    <h2 id="muc-tieu">4. Mục tiêu giảng dạy / học tập</h2>
+    <div class="section-card">
+        <p>Kết thúc Lab 3, sinh viên phải:</p>
+        <ol>
+            <li><strong>Phân biệt rõ</strong> ranh giới giữa Template (Bản mẫu cấu trúc) và Device (Thiết bị thực thể) trên Cloud Console.</li>
+            <li><strong>Định nghĩa và quản lý</strong> đúng chuẩn các Datastream (kiểu dữ liệu, min/max, đơn vị) trên Cloud.</li>
+            <li><strong>Thiết kế UX/UI cơ bản</strong> cho Dashboard (Gauge đo lường, Switch điều khiển) trên cả nền tảng Web và App Mobile.</li>
+            <li><strong>Tái cấu trúc (Refactor) hoàn toàn</strong> mã nguồn từ dạng tuyến tính (dùng <code>delay</code>) sang dạng điều khiển theo sự kiện định thời (dùng <code>BlynkTimer</code>).</li>
+            <li><strong>Giải quyết thành công</strong> thuật toán đồng bộ trạng thái (2-way sync) cho cơ cấu chấp hành.</li>
+            <li><strong>Thiết lập và quản lý</strong> giới hạn (Rate Limits) của hệ thống Cảnh báo (Event Logging) qua Email/Push Notification.</li>
+        </ol>
+    </div>
+
+    <!-- 5. KIẾN THỨC NỀN SINH VIÊN CẦN CÓ -->
+    <h2 id="kien-thuc">5. Kiến thức nền sinh viên cần hiểu rõ</h2>
+    <div class="section-card">
+        <ul>
+            <li><strong>Mạng Wi-Fi 2.4GHz:</strong> Mạch ESP8266 <strong>KHÔNG</strong> hỗ trợ Wi-Fi 5GHz. Nó cũng không thể kết nối các mạng yêu cầu xác thực qua cổng thông tin Web (Captive Portal) như Wifi trường học, quán cafe, hay mạng WPA2-Enterprise. Cách an toàn nhất để thực hành là phát <strong>Hotspot 2.4GHz</strong> từ điện thoại cá nhân.</li>
+            <li><strong>Blynk.virtualWrite(V_PIN, value):</strong> Hàm API để "Bắn" dữ liệu từ phần cứng LÊN Cloud. Dùng cho luồng Telemetry (đọc cảm biến).</li>
+            <li><strong>BLYNK_WRITE(V_PIN):</strong> Là một Macro tạo hàm Ngắt (Interrupt-like). Nó sẽ tự động được gọi (Trigger) bất cứ khi nào Server nhận được lệnh điều khiển từ người dùng trên App và ĐẨY xuống mạch.</li>
+            <li><strong>Lập trình Non-blocking với BlynkTimer:</strong> Là một bộ đếm giờ chạy ngầm. Thay vì bắt chip dừng mọi tác vụ để chờ 2 giây (lệnh <code>delay</code>), Timer nói với vi điều khiển: <em>"Cứ đi làm việc duy trì mạng Wifi đi, đúng 2000ms tao sẽ ngắt lời mày để bảo mày đi đọc DHT11"</em>. Nhờ vậy, hàm <code>loop()</code> được giải phóng, chạy hàng vạn vòng một giây để giữ kết nối Cloud luôn "sạch sẽ".</li>
+        </ul>
+    </div>
+
+    <!-- 6. CHUẨN BỊ TRƯỚC GIỜ LAB -->
+    <h2 id="chuan-bi">6. Chuẩn bị trước giờ Lab</h2>
+    <table>
+        <tr>
+            <th>Hạng mục</th>
+            <th>Chi tiết chuẩn bị</th>
+        </tr>
+        <tr>
+            <td><strong>Phần cứng</strong></td>
+            <td>Giữ nguyên sơ đồ breadboard của Lab 2: NodeMCU ESP8266, DHT11 (chân D5), Nút nhấn có trở kéo xuống 10k (chân D7), LED rời kèm trở hạn dòng 220Ω (chân D6).</td>
+        </tr>
+        <tr>
+            <td><strong>Mạng Internet</strong></td>
+            <td>Sử dụng điểm phát sóng cá nhân (Mobile Hotspot). Ghi chú chính xác tên (SSID) và Mật khẩu (có phân biệt hoa/thường).</td>
+        </tr>
+        <tr>
+            <td><strong>Tài khoản & Phần mềm</strong></td>
+            <td>
+                - Truy cập và đăng nhập sẵn tại <code>blynk.cloud</code> trên trình duyệt máy tính.<br>
+                - Cài đặt App <strong>Blynk IoT</strong> trên Smartphone (iOS/Android). Đăng nhập cùng tài khoản với bản Web. Cấp quyền gửi Thông báo (Push Notification).
+            </td>
+        </tr>
+    </table>
+
+    <!-- 7. PHÂN TÍCH HỆ THỐNG -->
+    <h2 id="phan-tich-ht">7. Phân tích Kiến trúc Hệ thống & Luồng Dữ liệu</h2>
+    <div class="section-card">
+        <p>Bức tranh toàn cảnh của Lab 3 được cấu thành từ 3 luồng giao tiếp chạy đa nhiệm (multitasking):</p>
+        
+        <h4>Luồng 1: Telemetry (Thu thập dữ liệu cảm biến định kỳ)</h4>
+        <pre>
+[BlynkTimer đếm đủ 2s] -> Đọc DHT11 -> Blynk.virtualWrite(V1, V2) --(Giao thức TCP)--> [Blynk Server] -> Render số liệu lên Widget Gauge
+        </pre>
+
+        <h4>Luồng 2: App Control (Điều khiển từ xa trên Cloud)</h4>
+        <pre>
+Người dùng bấm Switch[V0] trên App --(Internet)--> [Blynk Server] -> Gửi lệnh xuống MCU -> Kích hoạt BLYNK_WRITE(V0) -> Xuất mức HIGH ra D6 (Bật LED)
+        </pre>
+
+        <h4>Luồng 3: Physical Sync (Đồng bộ nút nhấn vật lý lên Cloud)</h4>
+        <pre>
+Người dùng bấm nút vật lý(D7) -> Code quét sự kiện Toggle -> Xuất mức chuyển đổi ra D6 (Bật/Tắt LED) 
+        => ĐỒNG THỜI GỌI HÀM -> Blynk.virtualWrite(V0, trạng_thái_mới) --(Internet)--> [Blynk Server] -> Ép công tắc Switch trên App trượt theo.
+        </pre>
+    </div>
+
+    <!-- 8. SƠ ĐỒ KẾT NỐI -->
+    <h2 id="ket-noi">8. Phân tích Sơ đồ phần cứng (Nhắc lại)</h2>
+    <div class="warning-box callout">
+        <span class="callout-title">Kế thừa tuyệt đối từ Lab 2</span>
+        <p>Mạch giữ nguyên 100%. Đảm bảo bạn không tháo nhầm bất kỳ linh kiện nào từ bài trước.</p>
+        <ul>
+            <li><strong>Cảm biến DHT11 (Data):</strong> Nối vào D5 (GPIO14)</li>
+            <li><strong>Cơ cấu chấp hành (LED + Trở 220Ω):</strong> Nối vào D6 (GPIO12)</li>
+            <li><strong>Cảm biến vật lý (Button + Trở Pull-down 10kΩ):</strong> Nối vào D7 (GPIO13)</li>
+        </ul>
+    </div>
+
+    <!-- 9. THAM SỐ CÁ NHÂN HÓA -->
+    <h2 id="tham-so">9. Các tham số BẮT BUỘC cá nhân hóa</h2>
+    <div class="danger-box callout">
+        <span class="callout-title">Điểm "chết" của sinh viên chép Code!</span>
+        <p>Nếu không cấp phát đúng 3 thông số định danh này, bạn sẽ upload thành công nhưng board không bao giờ lên mạng, hoặc tệ hơn là đi điều khiển... nhầm thiết bị của người khác.</p>
+    </div>
+    <table>
+        <tr>
+            <th>Tham số Code</th>
+            <th>Lấy ở đâu?</th>
+            <th>Quy tắc Kỹ sư Nhúng</th>
+        </tr>
+        <tr>
+            <td><code>BLYNK_TEMPLATE_ID</code></td>
+            <td>Màn hình <em>Device Info</em> trên Web Dashboard. Có tiền tố <code>TMPL...</code></td>
+            <td rowspan="2">Ba dòng <code>#define</code> này <strong>PHẢI ĐẶT Ở DÒNG ĐẦU TIÊN CỦA FILE CODE</strong>, đứng trước bất kỳ lệnh <code>#include</code> nào.</td>
+        </tr>
+        <tr>
+            <td><code>BLYNK_TEMPLATE_NAME</code></td>
+            <td>Dòng thứ hai trong khối đen Device Info.</td>
+        </tr>
+        <tr>
+            <td><code>BLYNK_AUTH_TOKEN</code></td>
+            <td>Dòng thứ ba trong khối đen. Chìa khóa mã hóa (Token) của Device.</td>
+            <td>Tuyệt đối bảo mật, đây là chữ ký cấp quyền ghi dữ liệu vào database của bạn.</td>
+        </tr>
+        <tr>
+            <td><code>ssid[]</code> / <code>pass[]</code></td>
+            <td>Cấu hình điểm phát WiFi của bạn.</td>
+            <td>Nhập sai 1 dấu cách, MCU sẽ bị treo ở trạng thái <code>Connecting to WiFi...</code> mãi mãi.</td>
+        </tr>
+    </table>
+
+    <!-- 10. QUY TRÌNH THỰC HÀNH TỪNG BƯỚC -->
+    <h2 id="quy-trinh">10. Quy trình Thực hành Từng bước (Chuẩn Kỹ sư)</h2>
+    <div class="section-card">
+        <h3><span class="step-number">1</span> Pha 1: Cấu trúc Hóa Đám mây (Web Console Setup)</h3>
+        <p><strong>Mục đích:</strong> Tạo Bản thiết kế (Template) và quy định các luồng dữ liệu (Datastreams).</p>
+        <ol>
+            <li>Đăng nhập <code>blynk.cloud</code>. Chọn biểu tượng <strong>Templates</strong> (Developer Zone) -> <em>New Template</em> (Name: SmartHome, Hardware: ESP8266, Connection: WiFi).</li>
+            <li>Chuyển sang tab <strong>Datastreams</strong>. Cực kỳ cẩn thận tạo 3 Datastreams (chọn <em>Virtual Pin</em>):
+                <ul>
+                    <li><strong>V1 (Nhiệt độ):</strong> Name: Temperature, Data Type: <strong>Double</strong>, Đơn vị: °C. Bật <em>Enable history data</em>.</li>
+                    <li><strong>V2 (Độ ẩm):</strong> Name: Humidity, Data Type: <strong>Double</strong>, Đơn vị: %. Bật <em>Enable history data</em>.</li>
+                    <li><strong>V0 (Đèn):</strong> Name: LED Control, Data Type: <strong>Integer</strong>, Min 0, Max 1. <span class="hl-green"><strong>BẮT BUỘC BẬT:</strong> "Sync with latest server value every time device connects"</span> (Để phục hồi trạng thái công tắc khi mất điện).</li>
+                </ul>
+            </li>
+            <li>Chuyển sang tab <strong>Web Dashboard</strong>. Kéo thả 2 Widget <em>Gauge</em> (gán cho V1 và V2). Kéo 1 Widget <em>Switch</em> (gán cho V0). Tùy chỉnh màu sắc. <strong>Nhấn SAVE góc phải trên cùng.</strong></li>
+        </ol>
+
+        <h3><span class="step-number">2</span> Pha 2: Định danh Thiết bị & Sự kiện (Device & Event)</h3>
+        <p><strong>Mục đích:</strong> Sinh ra thiết bị thực tế để lấy chìa khóa kết nối, và tạo luật cảnh báo.</p>
+        <ol>
+            <li>Chuyển sang menu <strong>Devices</strong> (biểu tượng hộp quà) -> <em>New Device</em> -> <em>From template</em>. Chọn Template vừa tạo.</li>
+            <li>Một bảng màu đen (Firmware Configuration) xuất hiện. <strong>Copy lưu 3 dòng code đó vào NotePad.</strong> Tắt bảng.</li>
+            <li>Quay lại Templates -> Edit Template -> Tab <strong>Events & Notifications</strong> -> <em>Create Event</em>.</li>
+            <li>Event Name: <code>High Temperature</code>. <strong>Event Code:</strong> <code>high_temperature</code> (Viết liền, không hoa). Type: <em>Warning</em>.</li>
+            <li>Tab <strong>Notifications</strong>: Bật <em>Enable notifications</em> -> Tại mục Email, chọn <em>Device Owner</em>. Nhấn Create -> <strong>Save Template</strong>.</li>
+        </ol>
+
+        <h3><span class="step-number">3</span> Pha 3: Lập trình Vi điều khiển (Firmware Upload)</h3>
+        <p><strong>Mục đích:</strong> Nạp luồng logic điều khiển vào ESP8266.</p>
+        <ol>
+            <li>Mở Arduino IDE. Copy toàn bộ mã nguồn chuẩn ở <strong>Phần 13</strong> vào.</li>
+            <li>Thay thế 3 dòng đầu tiên bằng mã bạn lưu ở NotePad. Nhập tên/pass WiFi.</li>
+            <li>Kiểm tra port COM. Nhấn Upload. Mở Serial Monitor (115200 baud) để theo dõi quá trình mạch bắt tay với Cloud. Khi hiện dòng <code>Ready (ping: ...ms)</code> là thành công.</li>
+        </ol>
+
+        <h3><span class="step-number">4</span> Pha 4: Thiết kế Giao diện Di động (Mobile App)</h3>
+        <p><strong>Mục đích:</strong> Điều khiển từ mọi nơi qua Smartphone.</p>
+        <ol>
+            <li>Mở App Blynk IoT trên điện thoại. Vuốt màn hình từ trên xuống (Pull to refresh). Thiết bị của bạn sẽ xuất hiện với trạng thái Online (Xanh lá).</li>
+            <li>Chạm vào thiết bị. Bấm biểu tượng <strong>Cờ lê (Settings)</strong> để vào chế độ thiết kế.</li>
+            <li>Nhấn biểu tượng <code>+</code>, thêm 2 Widget <em>Gauge</em> (Chọn Datastream V1, V2) và 1 Widget <em>Button</em> (Chọn Datastream V0).</li>
+            <li><strong>Nghiệm thu:</strong> Thoát chế độ thiết kế. 
+                <br>- Thổi hơi vào DHT11 -> Số trên Gauge điện thoại và Web nhảy lên.
+                <br>- Bấm nút ảo trên điện thoại -> Đèn trên mạch sáng.
+                <br>- Bấm nút vật lý trên mạch -> Đèn trên mạch tắt, <em>công tắc ảo trên điện thoại tự động trượt về OFF</em>.</li>
+        </ol>
+    </div>
+
+    <!-- 11. HỎI ĐÁP TRƯỚC CODE -->
+    <h2 id="hoi-dap">11. Sinh viên bắt buộc trả lời trước khi được lấy Code mẫu</h2>
+    <div class="student-box callout">
+        <span class="callout-title">Trình bày với Giảng viên / Mentor để mở khóa Code:</span>
+        <ol>
+            <li>Khi khai báo Datastream V1 cho Nhiệt độ trên Server, tại sao lại phải chọn kiểu dữ liệu là <code>Double</code> (Số thực) thay vì <code>Integer</code> (Số nguyên)?</li>
+            <li>Hãy giải thích sự khác biệt cốt lõi giữa chân phần cứng <strong>D5</strong> (nơi bạn cắm dây DHT11) và chân ảo <strong>V1</strong> (trên Blynk)? Chân ảo (Virtual Pin) rốt cuộc là khái niệm vật lý hay mạng lưới?</li>
+            <li>Lệnh <code>Blynk.virtualWrite(V0, trạng_thái);</code> đóng vai trò gì trong yêu cầu "Đồng bộ hóa 2 chiều" (Task 2 của bài Lab)?</li>
+            <li>Nếu mạch phần cứng đang hoạt động mà bị cúp điện, sau đó có điện lại, tính năng "Sync with latest server value" ở V0 sẽ giúp ích gì cho bóng đèn?</li>
+            <li>API <code>Blynk.logEvent()</code> dùng để gửi Email cảnh báo. Tại sao tài liệu lại nhắc nhở sinh viên "Tuyệt đối không để lệnh này gửi liên tục mỗi 2 giây"? Chuyện gì sẽ xảy ra với tài khoản của bạn?</li>
+        </ol>
+    </div>
+
+    <!-- 12. KHÔNG COPY CODE MÙ QUÁNG -->
+    <h2 id="canh-bao-code">12. Lỗi Kiến trúc Kinh điển (CẤM COPY MÙ QUÁNG)</h2>
+    <div class="danger-box callout">
+        <span class="callout-title">Lỗi Anti-Pattern trong Tài liệu PDF Gốc (Đã khắc phục)</span>
+        <p>Nếu bạn tham khảo tài liệu PDF gốc của môn học (Trang 8), tác giả đưa ra đoạn code có cấu trúc như sau:</p>
+        <pre class="hl-yellow">void loop() {
+  Blynk.run();
+  timer.run();
+  float temperature = dht.readTemperature();
+  delay(1000); // LỖI KIẾN TRÚC NGHIÊM TRỌNG!
+}</pre>
+        <p><strong>Tuyệt đối không làm theo mã nguồn này!</strong> Việc đặt lệnh đọc <code>dht.readTemperature()</code> vốn tốn thời gian, và đặc biệt là lệnh <code>delay(1000)</code> TRỰC TIẾP vào trong vòng lặp <code>loop()</code> khi sử dụng Blynk là một <strong>Thảm họa Thiết kế Hệ thống</strong>.</p>
+        <p><strong>Hậu quả:</strong> Hàm <code>delay(1000)</code> sẽ "đóng băng" (block) toàn bộ hoạt động của vi xử lý trong 1 giây. Trong 1 giây đó, hàm <code>Blynk.run()</code> không được gọi, mạch không thể nhận các gói tin duy trì kết nối (Heartbeat) từ Cloud, và bỏ lỡ hoàn toàn các thao tác bấm nút từ điện thoại. Hệ thống sẽ có triệu chứng: Nút bấm trên App giật lag, phản hồi chậm, hoặc mạch chớp liên tục do bị đá văng khỏi mạng (Offline).</p>
+        <p><strong>Tư duy Kỹ sư Nhúng hiện đại:</strong> Hàm <code>loop()</code> phải SẠCH và chạy Ở TỐC ĐỘ CAO NHẤT (hàng triệu vòng/giây). Các tác vụ đọc cảm biến chậm chạp phải được đóng gói vào một hàm riêng (ví dụ <code>sendSensorData()</code>), và giao cho <code>BlynkTimer</code> quản lý để gọi tự động định kỳ mà không block hệ thống.</p>
+    </div>
+
+    <!-- 13. PHÂN TÍCH CODE -->
+    <h2 id="phan-tich-code">13. Phân tích Mã nguồn Chuẩn Kỹ sư Nhúng (Timer & 2-Way Sync)</h2>
+    <div class="section-card">
+        <p>Mã nguồn dưới đây đã được <strong>tái cấu trúc toàn diện (Refactored)</strong> theo tiêu chuẩn học thuật cao nhất. Đọc kỹ các chú thích trong mã để hiểu rõ logic luồng dữ liệu.</p>
+        
+        <pre><code>/* 1. KHỐI ĐỊNH DANH ĐÁM MÂY (PHẢI TRÊN CÙNG, KHÔNG THAY ĐỔI VỊ TRÍ) */
+#define BLYNK_TEMPLATE_ID "TMPLxxxxxx"
+#define BLYNK_TEMPLATE_NAME "SmartHome"
+#define BLYNK_AUTH_TOKEN "Chuỗi_ký_tự_dài_từ_Device_Info..."
+
+// Cho phép in log debug ra Serial Monitor
+#define BLYNK_PRINT Serial
+
+/* 2. KHỐI THƯ VIỆN & CẤU HÌNH MẠNG */
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;BlynkSimpleEsp8266.h&gt;
+#include "DHT.h"
+
+char ssid[] = "Ten_WiFi_2.4G";
+char pass[] = "Mat_Khau_WiFi";
+
+/* 3. KHỐI ĐỊNH NGHĨA CHÂN VẬT LÝ VÀ CHÂN ẢO (MAPPING) */
+// Chân vật lý trên Board
+#define DHTPIN 14        // D5 (Kết nối Data DHT11)
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+#define LED_PIN 12       // D6 (Điều khiển LED)
+#define BUTTON_PIN 13    // D7 (Đọc nút nhấn cơ)
+
+// Chân ảo trên Cloud (Gắn với Datastream)
+#define VPIN_BUTTON V0   // Công tắc đèn
+#define VPIN_TEMP   V1   // Giá trị Nhiệt độ
+#define VPIN_HUMID  V2   // Giá trị Độ ẩm
+
+/* 4. KHỐI BIẾN TRẠNG THÁI HỆ THỐNG */
+BlynkTimer timer;        // Khởi tạo bộ đếm giờ (Trái tim của hệ thống đa nhiệm)
+
+int ledState = 0;        // Trạng thái đèn hiện tại (0: Tắt, 1: Sáng)
+int lastButtonState = 0; // Trạng thái nút cơ cũ (Dùng bắt sườn lên/Toggle)
+bool isEventTriggered = false; // Cờ (Flag) chặn Spam Email cảnh báo
+
+/* ====================================================================
+   5. KHỐI APP CONTROL: XỬ LÝ LỆNH TỪ CLOUD ĐẨY XUỐNG
+   ==================================================================== */
+// Hàm ngắt này tự động chạy khi người dùng gạt công tắc V0 trên App
+BLYNK_WRITE(VPIN_BUTTON) {
+  ledState = param.asInt();         // Đọc giá trị mới từ App (0 hoặc 1)
+  digitalWrite(LED_PIN, ledState);  // Bật/tắt đèn vật lý ngay lập tức
+  Serial.println(ledState ? "Lệnh từ App: BẬT" : "Lệnh từ App: TẮT");
+}
+
+/* ====================================================================
+   6. KHỐI TELEMETRY: THU THẬP VÀ ĐẨY DỮ LIỆU LÊN CLOUD
+   ==================================================================== */
+// Hàm này sẽ được Timer gọi (Không bỏ vào loop)
+void sendSensorData() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Lỗi đọc DHT11!");
+    return; // Dừng lại nếu lỗi cảm biến
+  }
+
+  // Bắn dữ liệu đóng gói lên kênh ảo (V1, V2)
+  Blynk.virtualWrite(VPIN_TEMP, t);
+  Blynk.virtualWrite(VPIN_HUMID, h);
+
+  // QUẢN TRỊ CẢNH BÁO RATE-LIMIT: Ngăn chặn gửi 100 email mỗi phút
+  if (t > 33.0 && !isEventTriggered) {
+    // Chỉ gửi khi nhiệt độ > 33 và Cờ đang tắt (chưa gửi)
+    Blynk.logEvent("high_temperature", String("Báo Động Cháy! Nhiệt độ: ") + t + "°C");
+    isEventTriggered = true; // Dựng cờ lên, khóa mõm lệnh gửi này lại
+    Serial.println(">> Đã gửi sự kiện Cảnh báo Nhiệt độ.");
+  } else if (t <= 32.0) {
+    isEventTriggered = false; // Hạ cờ xuống khi nhiệt độ mát mẻ trở lại
+  }
+}
+
+/* ====================================================================
+   7. KHỐI PHYSICAL SYNC: ĐỒNG BỘ NÚT NHẤN LÊN APP
+   ==================================================================== */
+// Hàm này quét nút nhấn vật lý liên tục để không trượt thao tác người dùng
+void checkPhysicalButton() {
+  int currentButtonState = digitalRead(BUTTON_PIN);
+  
+  // Phát hiện cạnh lên (Rising Edge) - Lúc người dùng ấn nút xuống
+  if (currentButtonState != lastButtonState) {
+    delay(50); // Mẹo nhỏ: Khử rung phím cơ học
+    if (currentButtonState == HIGH) {
+      ledState = !ledState;            // Đảo logic đèn
+      digitalWrite(LED_PIN, ledState); // Đảo trạng thái đèn thực tế
+      
+      // CHIÊU THỨC QUAN TRỌNG: Ép công tắc trên App cập nhật theo nút vật lý
+      Blynk.virtualWrite(VPIN_BUTTON, ledState); 
+      
+      Serial.println(ledState ? "Nút Cơ: BẬT -> Đã đồng bộ lên App" : "Nút Cơ: TẮT -> Đã đồng bộ lên App");
+    }
+    lastButtonState = currentButtonState; // Lưu vào quá khứ
+  }
+}
+
+/* ====================================================================
+   8. KHỞI TẠO VÀ VÒNG LẶP CHÍNH
+   ==================================================================== */
+void setup() {
+  Serial.begin(115200);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT); // Cần thiết lập mạch có trở Pull-down
+  
+  dht.begin();
+  
+  // Hàm này sẽ phong tỏa (block) mạch cho đến khi kết nối WiFi và Blynk thành công
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+
+  // --- LÊN LỊCH ĐA NHIỆM ---
+  // Gọi hàm sendSensorData() mỗi 2000ms (2 giây)
+  timer.setInterval(2000L, sendSensorData);
+  
+  // Gọi hàm checkPhysicalButton() mỗi 50ms (Tốc độ đủ nhanh để bắt dính mọi cú nhấn)
+  timer.setInterval(50L, checkPhysicalButton);
+}
+
+void loop() {
+  // LUẬT THÉP: Chỉ có 2 hàm của Hệ điều hành được phép tồn tại ở đây.
+  Blynk.run(); // Duy trì TCP/IP socket với Cloud
+  timer.run(); // Quản lý thời gian chạy các luồng
+}</code></pre>
+    </div>
+
+    <!-- 14. CHECKLIST -->
+    <h2 id="checklist">14. Checklist Nghiệm thu Hệ thống</h2>
+    <div class="section-card">
+        <h3>A. Checklist Đánh giá Môi trường Cloud (Blynk Console)</h3>
+        <div class="checklist-item"><input type="checkbox"> 1. Template đã định cấu hình phần cứng là <strong>ESP8266</strong> và <strong>WiFi</strong>?</div>
+        <div class="checklist-item"><input type="checkbox"> 2. Datastream V1, V2 đã được chọn kiểu <strong>Double</strong> để hiển thị phần thập phân?</div>
+        <div class="checklist-item"><input type="checkbox"> 3. Tính năng cốt lõi "Sync with latest server value" đã bật xanh ở Datastream V0?</div>
+        <div class="checklist-item"><input type="checkbox"> 4. Đã sao chép chính xác khối 3 dòng <code>#define</code> từ cửa sổ <em>Device Info</em> vào Arduino IDE?</div>
+
+        <h3>B. Checklist Vận hành Thực tế (Nghiệm thu sau Upload)</h3>
+        <div class="checklist-item"><input type="checkbox"> 1. Serial Monitor in ra logo Blynk ASCII và dòng <code>Ready (ping: ...ms)</code>.</div>
+        <div class="checklist-item"><input type="checkbox"> 2. Giao diện Smartphone báo trạng thái <strong>Online</strong> và đồng hồ Gauge nhấp nháy chỉ số.</div>
+        <div class="checklist-item"><input type="checkbox"> 3. <strong>Test Luồng Downlink:</strong> Bấm công tắc trên điện thoại -> LED trên Breadboard sáng ngay tức thì.</div>
+        <div class="checklist-item"><input type="checkbox"> 4. <strong>Test Luồng Uplink (2-Way Sync):</strong> Bấm nút cứng trên Breadboard -> Màn hình điện thoại nhìn thấy công tắc tự gạt sang trạng thái ngược lại.</div>
+        <div class="checklist-item"><input type="checkbox"> 5. <strong>Test Luồng Event:</strong> Dùng tay giữ chặt vỏ xanh DHT11 để nhiệt độ vọt qua 33°C. Mở Email cá nhân kiểm tra có nhận được đúng 1 thông báo duy nhất hay không.</div>
+    </div>
+
+    <!-- 15. DEBUG -->
+    <h2 id="debug">15. Debug và Xử lý sự cố Cấp cao</h2>
+    <table class="debug-table">
+        <tr>
+            <th>Hiện tượng Hệ thống</th>
+            <th>Căn nguyên Kỹ thuật</th>
+            <th>Hành động Chữa lỗi</th>
+        </tr>
+        <tr>
+            <td>Board chớp xanh liên tục, Serial báo <code>Invalid Auth Token</code> hoặc <code>Login Timeout</code>.</td>
+            <td>Sai SSID/Password của điểm phát WiFi. Hoặc sinh viên vô tình copy nhầm dãy chữ của Template ID dán đè vào vị trí của Auth Token.</td>
+            <td>Kiểm tra chéo lại 3 dòng định danh. Thử ngắt WiFi điện thoại rồi phát Hotspot lại bằng băng tần 2.4GHz. Mạng 5GHz vi điều khiển bị "mù".</td>
+        </tr>
+        <tr>
+            <td>Board báo Online thành công, Serial báo đọc cảm biến đúng, nhưng <strong>App và Web đứng im ở số 0</strong>.</td>
+            <td>Ánh xạ (Mapping) V-pin bị sai lệch. Trong code gửi lên V1, nhưng trên giao diện Web Widget Gauge lại được thiết lập đọc dữ liệu từ... V3.</td>
+            <td>Mở cấu hình (Hình bánh răng) của Widget Gauge trên Web hoặc App. Kiểm tra kỹ ô Datastream đã chọn đúng <code>Temperature [V1]</code> chưa.</td>
+        </tr>
+        <tr>
+            <td>Bấm nút vật lý trên mạch thì đèn sáng bình thường, nhưng công tắc trên App <strong>không tự chạy theo</strong>.</td>
+            <td>Thiếu mã truyền tải cập nhật ngược lên Cloud (Uplink Command).</td>
+            <td>Kiểm tra xem sinh viên đã vô ý xóa dòng <code>Blynk.virtualWrite(VPIN_BUTTON, ledState);</code> trong hàm <code>checkPhysicalButton()</code> hay chưa.</td>
+        </tr>
+        <tr>
+            <td>Tài khoản Blynk bị khóa tính năng, hiện cảnh báo đỏ <strong>Hitting Limits / Account Blocked</strong>.</td>
+            <td>Sinh viên xóa bỏ biến cờ logic <code>!isEventTriggered</code> trong lệnh gửi Event, khiến hệ thống xả súng hàng ngàn Event rác lên máy chủ.</td>
+            <td>Tuân thủ nghiêm ngặt cấu trúc IF-ELSE khóa cờ trong đoạn mã gốc phần 13. Sẽ mất 24 tiếng để Server mở khóa hình phạt cho tài khoản.</td>
+        </tr>
+    </table>
+
+    <!-- 16. TỰ ĐÁNH GIÁ & MỞ RỘNG -->
+    <h2 id="danh-gia">16. Câu hỏi Tự đánh giá & Bài tập Thiết kế Mở rộng</h2>
+    <div class="section-card">
+        <h3>Bài tập Tư duy Kỹ sư:</h3>
+        <ol>
+            <li>Trong kiến trúc mã nguồn phần 13, hàm <code>checkPhysicalButton()</code> được Timer cấp phát chạy mỗi <code>50ms</code>, trong khi <code>sendSensorData()</code> chỉ được gọi mỗi <code>2000ms</code>. Tại sao thiết kế viên lại phân bổ chu kỳ thời gian chênh lệch dữ dội như vậy?</li>
+            <li>Biến cờ (Flag) <code>isEventTriggered</code> đóng vai trò then chốt gì đối với nền tảng Server? Nếu kiến trúc sư phần mềm bỏ quên biến này, hệ thống sẽ vi phạm giới hạn kỹ thuật (Quota) nào của Cloud?</li>
+            <li>Hãy so sánh một cách biện chứng: Ưu điểm của việc thuê Cloud Service như Blynk so với việc lập trình viên tự dựng một trang Web cục bộ (Local Server ESP8266) ở Lab trước là gì? Khuyết điểm lộ ra khi đứt cáp quang biển là gì?</li>
+        </ol>
+
+        <h3>Mini Tasks Chinh phục (Làm ngay tại Phòng Thực hành):</h3>
+        <div class="student-box callout">
+            <span class="callout-title">Nhiệm vụ 1: Triển khai Biểu đồ Lịch sử (SuperChart)</span>
+            Các con số hiện tại chỉ phản ánh thực tại. Hãy biến Dashboard thành công cụ phân tích! Trên giao diện Web/App, xóa đi 1 Gauge cũ và thêm vào Widget <strong>Chart (Biểu đồ)</strong>. Nạp cả 2 luồng Datastream V1 và V2 vào biểu đồ này để quan sát sự tương quan vẽ đồ thị đường giữa Nhiệt và Ẩm theo dòng thời gian.
+        </div>
+        <div class="student-box callout">
+            <span class="callout-title">Nhiệm vụ 2: Thiết kế Hệ thống "Ngủ Đông" Từ Xa</span>
+            Mở rộng Cloud: Tạo Datastream V3 dạng Switch. Hãy viết thuật toán C++ xử lý: Khi bấm Switch V3 sang trạng thái Tắt (OFF), hệ thống lập tức <strong>Ngừng hẳn</strong> việc đọc DHT11 và không bơm dữ liệu lên mạng nữa (tiết kiệm năng lượng). Bấm ON để đánh thức. <em>Gợi ý thuật toán: Khai phá các API `timer.disable(timer_id)` và `timer.enable(timer_id)` của thư viện BlynkTimer.</em>
+        </div>
+    </div>
+
+    <!-- 17. MENTORING CHO GIẢNG VIÊN -->
+    <h2 id="mentor">17. Sổ tay Điều phối dành riêng cho Giảng viên / Mentor</h2>
+    <div class="mentor-box callout">
+        <span class="callout-title">Kịch bản Điều phối Thực chiến tại Lab Nhúng</span>
+        <ul>
+            <li><strong>Khởi tạo Tư duy (5 phút đầu):</strong> Phá vỡ lăng kính vật lý. Hỏi sinh viên: "Nút nhấn đồng giao tiếp bằng áp 3.3V, vậy nút bấm vẽ trên Màn hình điện thoại giao tiếp bằng gì?". Giúp các em chuyển đổi tư duy sang định dạng Gói tin (Data Packet) và Định tuyến ảo (Virtual Routing).</li>
+            <li><strong>Xử lý "Điểm mù Học thuật" (Sát thủ `delay`):</strong> Đây là bài học đau thương nhất. Giảng viên cần vẽ lên bảng trắng 2 mô hình kiến trúc: Tuyến tính (Linear/Blocking) và Hướng sự kiện (Event-driven/Non-blocking). Phải giải thích được cơ chế bắt tay của chuỗi TCP, nếu chip ngủ 1 giây bằng lệnh delay, hàng loạt gói tin từ router sẽ bị Drop.</li>
+            <li><strong>Kịch bản Thử lửa (Cross-exam) sự kiện 2-Way Sync:</strong> 
+                <br>- Mentor tiếp cận ngẫu nhiên bàn thực hành, yêu cầu sinh viên khóa màn hình điện thoại (tắt đen).
+                <br>- Mentor tự tay bấm nút cơ trên mạch -> Đèn tắt.
+                <br>- Bắt sinh viên mở khóa điện thoại lên -> Công tắc trên App Blynk <strong>bắt buộc phải hiển thị trạng thái OFF</strong>. 
+                <br>-> Nếu App vẫn ngoan cố hiển thị ON, sinh viên làm sai bài toán Sync và chưa hiểu kiến trúc truyền ngược (Uplink). Yêu cầu xem lại khối hàm số 7 trong mã nguồn.</li>
+            <li><strong>Biện pháp Răn đe Event Spam:</strong> Quán triệt 100% sinh viên về quy tắc Rate Limit. Nếu nhóm nào để mạch spam chết hòm thư của chính mình do tự ý sửa vòng lặp cảnh báo, sẽ bị rớt kết nối 24h và bị trừ điểm đánh giá hiệu suất.</li>
+        </ul>
+    </div>
+
+    <hr style="margin-top:40px; border-top: 1px solid #ccc;">
+
+    <div class="note-box callout">
+        <span class="callout-title">Nhật ký Biên tập (Phản hồi cho Tác giả Giáo trình gốc)</span>
+        <p><strong>Cập nhật Chuẩn hóa Học thuật (Critical Refactoring) cho Lab 3:</strong></p>
+        <p>- <strong>Loại bỏ Lỗi Thiết kế Kiến trúc (Anti-pattern) trong PDF gốc:</strong> Tại trang 8 của giáo trình PDF, việc đưa hàm <code>dht.readTemperature()</code> và <code>delay(1000)</code> vào trực tiếp thân hàm <code>void loop()</code> cùng với <code>Blynk.run()</code> là một sai lầm nghiêm trọng về kiến trúc khi lập trình mạng. Nó gây nghẽn Socket, rớt Heartbeat liên tục và App bị treo. Phiên bản HTML này đã làm sạch hoàn toàn thiết kế bằng cách sử dụng bộ đếm <code>BlynkTimer</code> đa nhiệm, tuân thủ đúng chuẩn công nghiệp của kỹ sư nhúng.<br>
+        - <strong>Bổ khuyết Tài liệu về Thuật toán Đồng bộ (2-Way Sync):</strong> Task 2 trong PDF yêu cầu đồng bộ hóa giữa Hardware và Cloud nhưng lại không hướng dẫn bắt sự kiện nút cứng với Bounce-protection (vốn đã học ở Lab 2). Tài liệu mới đã triển khai khối mã hoàn chỉnh cho phép thiết bị báo cáo ngược trạng thái lên Cloud (Uplink) khi có tương tác vật lý.<br>
+        - <strong>Bảo vệ Quota Máy chủ (Rate Limiting Shield):</strong> Việc hướng dẫn dùng lệnh cảnh báo nhiệt độ trong PDF gốc tiềm ẩn rủi ro rất cao khiến sinh viên làm sập giới hạn 100 events/ngày của Server. Đoạn mã học thuật mới đã bổ sung cơ cấu Cờ trạng thái (Flag <code>isEventTriggered</code>) bằng biểu thức logic để khóa mõm sự kiện sau lần gửi đầu tiên, ngăn chặn Spam.</p>
+    </div>
+
+    <p style="text-align:center; color: #888; font-size: 0.9em; margin-top: 30px;">
+        <em>Tài liệu được Chuẩn hóa Kiến trúc theo định hướng Kỹ sư hệ thống (Mentor-Guided). Nắm trọn tư duy đồng bộ hóa Đám mây ở Lab 3 là giấy thông hành để bạn tiến sâu vào thế giới giao thức trần trụi MQTT ở Lab 4.</em>
+    </p>
+
+</div>
+
+</body>
+</html>
